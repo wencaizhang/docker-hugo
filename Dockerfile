@@ -4,7 +4,7 @@ MAINTAINER wencaizhang <1052642137@qq.com>
 # ENV 设置环境变量，方便下面调用
 ENV HUGO_VERSION=0.23 \
     HUGO_USER=hugo \
-    HUGO_SITE=/srv/hugo
+    HUGO_SITE=/root/www/
 
 ENV HUGO_URL=https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_Linux-64bit.tar.gz
 
@@ -15,11 +15,22 @@ ADD ${HUGO_URL} /tmp/
 # 上面下载的是个压缩包，需要解压缩
 RUN tar -xzf /tmp/*.tar.gz -C /tmp \
     && mv /tmp/hugo /usr/local/bin/ \
-    && rm -rf /tmp/* \
-    && adduser ${HUGO_USER} -D
+    && rm -rf /tmp/*
+
+ENV HUGO_USER=hugo \
+  HUGO_UID=1000 \
+  HUGO_GID=1000 \
+  HUGO_HOME=/hugo
+
+RUN addgroup -S $HUGO_USER -g ${HUGO_GID} \
+  && adduser -S  \
+    -g $HUGO_USER \
+    -h $HUGO_HOME \
+    -u ${HUGO_UID} \
+    $HUGO_USER
 
 # 指定当前用户
-USER ${HUGO_USER}  
+#USER ${HUGO_USER}  
 
 # 指定工作目录，如该目录不存在，WORKDIR 会帮你建立目录
 WORKDIR ${HUGO_SITE}

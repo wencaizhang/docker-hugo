@@ -1,0 +1,12 @@
+version: '0.1'
+
+services:
+  hugo:
+    image: wencaizhang/hugo
+    #build:
+    #  context: ./
+    #  dockerfile: Dockerfile
+    volumes:
+      - /root/www:/root/www
+    ports:
+      - 1313:1313
